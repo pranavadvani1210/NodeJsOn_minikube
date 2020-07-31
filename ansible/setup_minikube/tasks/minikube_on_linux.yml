@@ -5,6 +5,7 @@
     name: "{{ item }}"
     state: latest
   with_items: "{{ minikube_dependencies }}"
+  ignore_errors: yes
 
 - name: start and enable docker
   service:
