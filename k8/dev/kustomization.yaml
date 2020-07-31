@@ -1,0 +1,7 @@
+resources:
+  - namespace.yaml
+  - persistentVolumeClaim.yaml
+  - mysql-deployment.yaml
+  - mysql-service.yaml
+  - node-client-deployment.yaml
+  - client-service.yaml

@@ -1,0 +1,61 @@
+name: CI
+
+on: 
+  push:
+    paths: 
+      - 'nodejs_app/db/**'
+      - 'nodejs_app/client/**'
+    branches-ignore: 
+      - 'master'
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+      - name: Login to dockerhub
+        id: login-dockerhub
+        run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login docker.io -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
+      - name: Build and push client image to dockerhub
+        env:
+          REGISTRY: ${{ steps.login-dockerhub.outputs.registry }}
+          REPOSITORY: dev-nodejsapp-client
+          IMAGE_TAG: latest
+        run: |
+          cd nodejs_app/client/
+          docker build -t ${{ secrets.DOCKER_USERNAME }}/$REPOSITORY:$IMAGE_TAG .
+          docker push ${{ secrets.DOCKER_USERNAME }}/$REPOSITORY:$IMAGE_TAG
+      - name: Build and push db image to dockerhub
+        env:
+          REGISTRY: ${{ steps.login-dockerhub.outputs.registry }}
+          REPOSITORY: dev-nodejsapp-db
+          IMAGE_TAG: latest
+        run: |
+          cd nodejs_app/db/
+          docker build -t ${{ secrets.DOCKER_USERNAME }}/$REPOSITORY:$IMAGE_TAG .
+          docker push ${{ secrets.DOCKER_USERNAME }}/$REPOSITORY:$IMAGE_TAG
+          
+      - name: setup minikube
+        run: |
+          cd ansible
+          ansible-playbook -i hosts --connection=local setup.yml 
+      - name: Start minikube and check status
+        run: |
+          minikube start
+          minikube status
+      - name: Deploy the kubernetes manifests
+        run: |
+          cd k8/dev/
+          kubectl apply -k .
+      - name: Check status
+        run: |
+          sleep 60
+          kubectl -n nodejsapp get pods
+          sleep 100
+          kubectl -n nodejsapp describe deployments
+          kubectl -n nodejsapp get pods
+          export Ex_IP=`kubectl -n nodejsapp get service |grep nodejsapp-client-service| awk '{print $3}'`
+          if [[ $res == "Hello World" ]]; then echo 'Success!'; else exit 1; fi
+      - name: Logout of Dockerhub
+        if: always()
+        run: docker logout ${{ steps.login-dockerhub.outputs.registry }}

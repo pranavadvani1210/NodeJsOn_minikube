@@ -1,0 +1,9 @@
+---
+# vars file for setup_minikube
+
+minikube_dependencies:
+  - qemu-kvm
+  - docker.io
+  - conntrack
+
+GHUSER: pranavadvani1210

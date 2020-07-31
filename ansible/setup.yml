@@ -1,0 +1,7 @@
+---
+
+- name: install minikube
+  hosts: minikube_server_hosts
+  become: yes
+  roles:
+    - setup_minikube  

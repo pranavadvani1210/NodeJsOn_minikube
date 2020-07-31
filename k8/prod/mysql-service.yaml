@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: nodejsapp-mysql-service
+  namespace: nodejsapp-prod
+spec:
+  selector:
+    app: nodejsapp
+    tier: mysql
+  ports:
+    - protocol: TCP
+      port: 3306
+      targetPort: 3306

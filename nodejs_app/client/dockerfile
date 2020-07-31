@@ -1,0 +1,26 @@
+# Take base image as node
+FROM node:12
+
+# Create app directory
+WORKDIR /nodejsapp
+
+# Copy package.json to initialize the app
+COPY package.json .
+
+# Create package-lock.json
+RUN npm install
+
+# Bundle app source
+COPY server.js database.js ./
+
+# Install mysql driver
+WORKDIR /nodejsapp/nodemysql
+RUN npm install mysql
+
+WORKDIR /nodejsapp
+
+# The app will need 5000 port to be exposed for the client app
+EXPOSE 5000
+
+# Run the application
+CMD [ "node", "server.js" ]

@@ -1,0 +1,4 @@
+---
+# tasks file for setup_minikube
+- include_tasks: minikube_on_linux.yml
+  when: ansible_system == 'Linux'

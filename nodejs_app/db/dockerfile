@@ -1,0 +1,19 @@
+# Use the base image as mysql
+FROM mysql:8.0
+
+# Setting the environment variables for mysql
+ENV MYSQL_USER root
+ENV MYSQL_PASS password
+
+
+# Set Working directory
+WORKDIR /tmp/init_db/
+
+# COPY db_init.sql file to initialize our DB with table required
+COPY init_db.sql .
+
+# COPY init_db.sh file to execute init_db.sql file and basic requirements for initializing mysqldb
+COPY init_db.sh /docker-entrypoint-initdb.d/init_db.sh
+
+# Expose default port
+EXPOSE 3306/tcp

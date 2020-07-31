@@ -1,0 +1,25 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nodejsapp-client
+  namespace: nodejsapp-dev
+  labels:
+    app: nodejsapp
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: nodejsapp
+      tier: client
+  template:
+    metadata:
+      labels:
+        app: nodejsapp
+        tier: client
+    spec:
+      containers:
+      - name: nodejsapp
+        image: pranav069/dev-nodejsapp-client:latest
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 5000

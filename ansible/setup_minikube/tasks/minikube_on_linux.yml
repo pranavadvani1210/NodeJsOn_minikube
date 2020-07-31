@@ -1,0 +1,35 @@
+---
+
+- name: install dependencies for minikube
+  package:
+    name: "{{ item }}"
+    state: latest
+  with_items: "{{ minikube_dependencies }}"
+
+- name: start and enable docker
+  service:
+    name: docker
+    state: started
+    enabled: yes
+
+- name: install kubectl
+  get_url:
+    url: "https://storage.googleapis.com/kubernetes-release/release/v1.18.6/bin/linux/amd64/kubectl"
+    dest: /usr/bin/kubectl
+    mode: 0700
+
+- name: install minikube
+  get_url:
+    url: https://storage.googleapis.com/minikube/releases/latest/minikube-linux-amd64
+    dest: /usr/bin/minikube
+    mode: 0700
+
+- name: start minikube
+  command: minikube start --driver=none
+  ignore_errors: true
+
+  #- name: install fluxctl
+  #command: snap install fluxctl --classic
+
+  #- name: configure flux
+  #command: setup_minikube/scripts/flux.sh

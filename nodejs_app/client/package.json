@@ -1,0 +1,10 @@
+{
+  "name": "nodejs_web_app",
+  "version": "1.0.0",
+  "description": "Node.js sample app on Docker",
+  "author": "Pranav Advani",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  }
+}

@@ -1,0 +1,53 @@
+apiVersion: v1
+kind: Secret
+metadata:
+  name: mysql-pass
+  namespace: nodejsapp-dev
+type: Opaque
+stringData:
+  password: password
+
+---
+
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: nodejsapp-mysql
+  namespace: nodejsapp-dev
+  labels:
+    app: nodejsapp
+spec:
+  selector:
+    matchLabels:
+      app: nodejsapp
+      tier: mysql
+  serviceName: nodejsapp-mysql-service
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: nodejsapp
+        tier: mysql
+    spec:
+      terminationGracePeriodSeconds: 10
+      containers:
+      - image: pranav069/dev-nodejsapp-db:latest
+        name: mysql
+        imagePullPolicy: Always
+        env:
+        - name: MYSQL_ROOT_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: mysql-pass
+              key: password
+        ports:
+        - containerPort: 3306
+          name: mysql
+        volumeMounts:
+        - name: mysql-persistent-storage
+          mountPath: /var/lib/mysql
+      volumes:
+      - name: mysql-persistent-storage
+        persistentVolumeClaim:
+          claimName: mysql-pv-claim
+
