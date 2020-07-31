@@ -50,11 +50,11 @@ jobs:
       - name: Check status
         run: |
           sleep 60
-          kubectl -n nodejsapp get pods
-          sleep 100
-          kubectl -n nodejsapp describe deployments
-          kubectl -n nodejsapp get pods
-          export Ex_IP=`kubectl -n nodejsapp get service |grep nodejsapp-client-service| awk '{print $3}'`
+          kubectl -n nodejsapp-dev get pods
+          sleep 60
+          kubectl -n nodejsapp-dev describe deployments
+          kubectl -n nodejsapp-dev get pods
+          export Ex_IP=`kubectl -n nodejsapp-dev get service |grep nodejsapp-client-service| awk '{print $3}'`
           if [[ $res == "Hello World" ]]; then echo 'Success!'; else exit 1; fi
       - name: Logout of Dockerhub
         if: always()
