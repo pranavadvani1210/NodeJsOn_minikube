@@ -19,3 +19,4 @@ Pipeline created in GitHub using GitHub workflows to perform the CI (1 on GitHub
 ## Deployment View
 
 ![Deployment View](./DeploymentView1.png)
+![Resources On EC2 instance](./ResourcesOnEc2.png)
